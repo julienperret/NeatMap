@@ -153,19 +153,26 @@ def compute_compactness(area, perimeter):
 
 
 def complexityPolygon(geom):
-    n = len(geom)
-    return n-1
+    
+    
+    return len(geom)-1
 
 def compute_complexity(geom):
-    if geom.isMultipart(): # new part for multipolylines
+    type = geom.wkbType()
+    if (type ==  QgsWkbTypes.MultiPolygon): # new part for multipolylines
         multiP = geom.asMultiPolygon()
         count = 0
         for v in multiP:
             count = count + complexityPolygon(v)
         return count
-    else:
-        
-        return complexityPolygon(geom)
+    elif (type == QgsWkbTypes.Polygon):
+        polygon =  geom.asPolygon()
+        count = 0
+        for v in polygon :
+            count = count + complexityPolygon(v)
+        return count
+    
+    return 0
 
 def compute_convexity1(geom, area):
     """
